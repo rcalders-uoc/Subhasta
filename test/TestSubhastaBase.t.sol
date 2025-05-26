@@ -4,8 +4,9 @@ pragma solidity ^0.8.28;
 import "forge-std/Test.sol";
 import "../src/SubhastaNoActualitzable.sol";
 import "../src/NFTTest.sol";
+import "../src/ISubhasta.sol";
 
-contract TestLogicaSubhasta is Test {
+abstract contract TestSubhastaBase is Test {
     // Participants (adreces de prova)
     address constant VENEDOR1 = address(1);
     address constant VENEDOR2 = address(2);
@@ -14,15 +15,16 @@ contract TestLogicaSubhasta is Test {
     address constant LICITADOR3 = address(5);
 
     // Contractes
-    SubhastaNoActualitzable subhasta;
+    ISubhasta subhasta;
     NFTTest nft;
 
     uint256 token1;
     uint256 token2;
 
+    function creaSubhasta() internal virtual returns (ISubhasta);
+
     function setUp() public {
-        subhasta = new SubhastaNoActualitzable();
-        subhasta.initialize(address(this));
+        subhasta = creaSubhasta();
         nft = new NFTTest();
 
         // Emissio de tokens
