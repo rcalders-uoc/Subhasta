@@ -4,8 +4,9 @@ pragma solidity ^0.8.28;
 import "forge-std/Test.sol";
 import "../src/SubhastaNoActualitzable.sol";
 import "../src/NFTTest.sol";
+import "../src/ISubhasta.sol";
 
-contract TestLogicaSubhasta is Test {
+abstract contract TestSubhastaActualitzableBase is Test {
     // Participants (adreces de prova)
     address constant VENEDOR1 = address(1);
     address constant VENEDOR2 = address(2);
@@ -14,15 +15,18 @@ contract TestLogicaSubhasta is Test {
     address constant LICITADOR3 = address(5);
 
     // Contractes
-    SubhastaNoActualitzable subhasta;
+    ISubhasta subhasta;
     NFTTest nft;
 
     uint256 token1;
     uint256 token2;
 
-    function setUp() public {
-        subhasta = new SubhastaNoActualitzable();
-        subhasta.initialize(address(this));
+    function creaSubhasta() internal virtual ;
+    function actualitzaSubhasta() internal virtual;
+
+    function setUp() public virtual {
+        creaSubhasta();
+       
         nft = new NFTTest();
 
         // Emissio de tokens
@@ -35,7 +39,7 @@ contract TestLogicaSubhasta is Test {
         vm.prank(VENEDOR2);
         nft.setApprovalForAll(address(subhasta), true);
 
-        // balances per a participants
+        // saldos per a participants
         vm.deal(LICITADOR1, 10 ether);
         vm.deal(LICITADOR2, 10 ether);
         vm.deal(LICITADOR3, 10 ether);
@@ -74,6 +78,9 @@ contract TestLogicaSubhasta is Test {
         vm.expectRevert("oferta massa baixa");
         subhasta.novaOferta{value: 0.8 ether}(id);
 
+        // Efectuem canvi de contracte
+        actualitzaSubhasta();
+
         // Oferta correcta 1.2 ETH
         vm.prank(LICITADOR2);
         subhasta.novaOferta{value: 1.2 ether}(id);
@@ -95,6 +102,9 @@ contract TestLogicaSubhasta is Test {
 
         vm.prank(LICITADOR3);
         subhasta.novaOferta{value: 1.4 ether}(id);
+
+        // Efectuem canvi de contracte
+        actualitzaSubhasta();
 
         // Finalització prematura
         vm.warp(block.timestamp + 59); // temps 59
@@ -139,6 +149,9 @@ contract TestLogicaSubhasta is Test {
         // Comprova 1a subhasta finalitzada i l'altra no
         vm.warp(block.timestamp + 61); // temps 61 s
 
+        // Efectuem canvi de contracte
+        actualitzaSubhasta();
+
         uint256 saldoPrevi1 = VENEDOR1.balance;
         vm.prank(LICITADOR1);
         subhasta.finalitzacio(id1);
@@ -169,6 +182,9 @@ contract TestLogicaSubhasta is Test {
         // Avancem el temps fins al final de la subhasta
         // sense que hi hagi cap licitador.
         vm.warp(block.timestamp + 61);
+
+        // Efectuem canvi de contracte
+        actualitzaSubhasta();
 
         vm.prank(VENEDOR1);
         subhasta.finalitzacio(id);

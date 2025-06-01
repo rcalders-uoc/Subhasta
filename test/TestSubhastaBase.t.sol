@@ -37,7 +37,7 @@ abstract contract TestSubhastaBase is Test {
         vm.prank(VENEDOR2);
         nft.setApprovalForAll(address(subhasta), true);
 
-        // balances per a participants
+        // saldos per a participants
         vm.deal(LICITADOR1, 10 ether);
         vm.deal(LICITADOR2, 10 ether);
         vm.deal(LICITADOR3, 10 ether);

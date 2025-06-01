@@ -34,31 +34,25 @@ contract VersioTransparent is Script {
 }
 
 contract VersioUUPS is Script {
-
-
     function run() external {
         vm.startBroadcast();
 
-       address admin = tx.origin;
-    
-        // Subhasta amb proxy UUPS 
+        address admin = msg.sender;
+
+        // Subhasta amb proxy UUPS
         SubhastaUUPS impluups = new SubhastaUUPS();
 
         bytes memory inituups = abi.encodeCall(
             SubhastaUUPS.initialize,
             (admin)
         );
-        ERC1967Proxy proxyuups = new ERC1967Proxy(
-        address(impluups),
-        inituups);
+        ERC1967Proxy proxyuups = new ERC1967Proxy(address(impluups), inituups);
 
         // Subhasta sense proxy (no actualitzable)
         vm.stopBroadcast();
 
-
         console2.log("Impl uups:", address(impluups));
         console2.log("Proxy uups:", address(proxyuups));
-
     }
 }
 
@@ -67,13 +61,12 @@ contract VersioUUPS is Script {
 // de les versions amb proxy.
 
 contract VersioNA is Script {
-
     function run() external {
         vm.startBroadcast();
 
-       address admin = tx.origin;
-    
-        // Subhasta amb proxy UUPS 
+        address admin = msg.sender;
+
+        // Subhasta amb proxy UUPS
         SubhastaNoActualitzable implna = new SubhastaNoActualitzable();
 
         bytes memory initna = abi.encodeCall(
@@ -81,8 +74,8 @@ contract VersioNA is Script {
             (admin)
         );
 
-        // Fem crida baix nivell com es faria 
-        // en el proxy. 
+        // Fem crida baix nivell com es faria
+        // en el proxy.
         address(implna).call(initna);
 
         // Subhasta sense proxy (no actualitzable)

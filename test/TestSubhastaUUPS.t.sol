@@ -4,7 +4,7 @@ import "../src/SubhastaUUPS.sol";
 import "../src/ISubhasta.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
-contract TestSubhastaTransparent is TestSubhastaBase {
+contract TestSubhastaUUPS is TestSubhastaBase {
     function creaSubhasta() internal override returns (ISubhasta) {
         address admin = tx.origin;
 

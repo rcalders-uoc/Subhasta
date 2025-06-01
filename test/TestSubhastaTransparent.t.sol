@@ -21,4 +21,5 @@ contract TestSubhastaTransparent is TestSubhastaBase {
             );
         return ISubhasta(address(proxytransp));
     }
+
 }
