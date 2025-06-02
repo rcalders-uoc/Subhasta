@@ -46,11 +46,11 @@ contract ActualitzaVersioUUPS is Script {
         console2.log("Proxy:", subhastaProxy);
         SubhastaUUPSV2 novaImpl = new SubhastaUUPSV2();
 
-        bytes memory initna = abi.encodeCall(SubhastaUUPSV2.initialize, (admin));
+        // bytes memory initUUPS = abi.encodeCall(SubhastaUUPSV2.initialize, (admin));
 
         // Fem crida baix nivell com es faria
         // en el proxy.
-        address(novaImpl).call(initna);
+        // address(novaImpl).call(initUUPS);
 
         bytes memory data = abi.encodeWithSignature("upgradeToAndCall(address,bytes)", address(novaImpl), bytes(""));
 

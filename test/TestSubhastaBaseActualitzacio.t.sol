@@ -6,7 +6,7 @@ import "../src/SubhastaNoActualitzable.sol";
 import "../src/NFTTest.sol";
 import "../src/ISubhasta.sol";
 
-abstract contract TestSubhastaActualitzableBase is Test {
+abstract contract TestSubhastaBaseActualitzacio is Test {
     // Participants (adreces de prova)
     address constant VENEDOR1 = address(1);
     address constant VENEDOR2 = address(2);
@@ -21,11 +21,11 @@ abstract contract TestSubhastaActualitzableBase is Test {
     uint256 token1;
     uint256 token2;
 
-    function creaSubhasta() internal virtual;
+    function creaSubhasta() internal virtual returns (ISubhasta);
     function actualitzaSubhasta() internal virtual;
 
     function setUp() public virtual {
-        creaSubhasta();
+        subhasta = creaSubhasta();
 
         nft = new NFTTest();
 
