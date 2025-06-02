@@ -20,18 +20,9 @@ contract ActualitzaVersioTransparent is Script {
     address subhastaProxy = vm.envAddress("ADRECA_SUBHASTA");
 
     function run() external {
-        bytes32 slot = bytes32(uint256(keccak256("eip1967.proxy.admin")) - 1);
-        address adminProxy = address(
-            uint160(uint256(vm.load(subhastaProxy, slot)))
-        );
-        console2.log("Admin del proxy:", adminProxy);
-        console2.log("Tx.origin:", tx.origin);
-        console2.log("msg.sender:", msg.sender);
         vm.startBroadcast();
-
         // Subhasta amb proxy Transparent
-        address admin = tx.origin;
-        SubhastaTransparentV2 novaImpl = new SubhastaTransparentV2();
+       SubhastaTransparentV2 novaImpl = new SubhastaTransparentV2();
 
         // Llegim l'adreça de l'admin del proxy (contracte ProxyAdmin)
         bytes32 ADMIN_SLOT = bytes32(

@@ -10,4 +10,5 @@ interface ISubhasta {
     function novaOferta(uint256 id) external payable;
     function devolucio(uint256 id) external;
     function finalitzacio(uint256 id) external;
+    function owner() external returns (address);
 }
