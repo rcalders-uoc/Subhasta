@@ -8,7 +8,7 @@ contract NFTTest is ERC721 {
 
     constructor() ERC721("NFTTest", "NFTT") {}
 
-// Tothom pot cridar la funció mint ates que es NFT de test
+    // Tothom pot cridar la funció mint ates que es NFT de test
     function mint(address to) external returns (uint256 id) {
         id = ++_tokenId;
         _mint(to, id);

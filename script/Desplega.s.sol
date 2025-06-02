@@ -15,16 +15,10 @@ contract VersioTransparent is Script {
         address admin = tx.origin;
         SubhastaTransparent impltransp = new SubhastaTransparent();
 
-        bytes memory inittransp = abi.encodeCall(
-            SubhastaTransparent.initialize,
-            (admin)
-        );
+        bytes memory inittransp = abi.encodeCall(SubhastaTransparent.initialize, (admin));
 
-        TransparentUpgradeableProxy proxytransp = new TransparentUpgradeableProxy(
-                address(impltransp),
-                admin,
-                inittransp
-            );
+        TransparentUpgradeableProxy proxytransp =
+            new TransparentUpgradeableProxy(address(impltransp), admin, inittransp);
 
         vm.stopBroadcast();
 
@@ -42,10 +36,7 @@ contract VersioUUPS is Script {
         // Subhasta amb proxy UUPS
         SubhastaUUPS impluups = new SubhastaUUPS();
 
-        bytes memory inituups = abi.encodeCall(
-            SubhastaUUPS.initialize,
-            (admin)
-        );
+        bytes memory inituups = abi.encodeCall(SubhastaUUPS.initialize, (admin));
         ERC1967Proxy proxyuups = new ERC1967Proxy(address(impluups), inituups);
 
         // Subhasta sense proxy (no actualitzable)
@@ -69,10 +60,7 @@ contract VersioNA is Script {
         // Subhasta amb proxy UUPS
         SubhastaNoActualitzable implna = new SubhastaNoActualitzable();
 
-        bytes memory initna = abi.encodeCall(
-            SubhastaNoActualitzable.initialize,
-            (admin)
-        );
+        bytes memory initna = abi.encodeCall(SubhastaNoActualitzable.initialize, (admin));
 
         // Fem crida baix nivell com es faria
         // en el proxy.

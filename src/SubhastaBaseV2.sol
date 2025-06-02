@@ -6,11 +6,7 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
-abstract contract SubhastaBaseV2 is
-    Initializable,
-    OwnableUpgradeable,
-    ReentrancyGuardUpgradeable
-{
+abstract contract SubhastaBaseV2 is Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable {
     enum EstatSubhasta {
         Activa,
         CancelladaOwner,
@@ -49,30 +45,12 @@ abstract contract SubhastaBaseV2 is
 
     // Esdeveniments
 
-    event SubhastaCreada(
-        uint256 idSubhasta,
-        address venedor,
-        address contracteNFT,
-        uint256 idToken,
-        uint48 tempsFinal
-    );
-    event OfertaRealitzada(
-        uint256 idSubhasta,
-        address licitador,
-        uint256 oferta
-    );
+    event SubhastaCreada(uint256 idSubhasta, address venedor, address contracteNFT, uint256 idToken, uint48 tempsFinal);
+    event OfertaRealitzada(uint256 idSubhasta, address licitador, uint256 oferta);
     event DevolucioFeta(uint256 idSubhasta, address licitador, uint256 oferta);
 
-    event SubhastaFinalitzada(
-        uint256 idSubhasta,
-        address guanyador,
-        uint256 oferta
-    );
-    event NFTTransferit(
-        uint256 idSubhasta,
-        address contracteNFT,
-        uint256 idToken
-    );
+    event SubhastaFinalitzada(uint256 idSubhasta, address guanyador, uint256 oferta);
+    event NFTTransferit(uint256 idSubhasta, address contracteNFT, uint256 idToken);
 
     event SubhastaCancellada(uint256 subhastaId, EstatSubhasta estat);
 
@@ -102,63 +80,36 @@ abstract contract SubhastaBaseV2 is
         subhasta.idToken = idToken;
         subhasta.preuReserva = preuReserva;
 
-        IERC721(contracteNFT).transferFrom(
-            subhasta.venedor,
-            address(this),
-            idToken
-        );
+        IERC721(contracteNFT).transferFrom(subhasta.venedor, address(this), idToken);
 
-        emit SubhastaCreada(
-            idSubhasta,
-            subhasta.venedor,
-            contracteNFT,
-            idToken,
-            subhasta.tempsFinal
-        );
+        emit SubhastaCreada(idSubhasta, subhasta.venedor, contracteNFT, idToken, subhasta.tempsFinal);
     }
 
     // Compatibilitat DApp versió anterior
     // S'elimina nonreentrant.
-    
-    function novaSubhasta(
-        address venedor,
-        uint48 duradaSubhasta,
-        address contracteNFT,
-        uint256 idToken
-    ) external returns (uint256 idSubhasta) {
-        idSubhasta = novaSubhastaPreuReserva(
-            venedor,
-            duradaSubhasta,
-            contracteNFT,
-            idToken,
-            0
-        );
+
+    function novaSubhasta(address venedor, uint48 duradaSubhasta, address contracteNFT, uint256 idToken)
+        external
+        returns (uint256 idSubhasta)
+    {
+        idSubhasta = novaSubhastaPreuReserva(venedor, duradaSubhasta, contracteNFT, idToken, 0);
     }
 
     function novaOferta(uint256 idSubhasta) external payable nonReentrant {
         SubhastaStorage storage $ = obteStorage();
         Subhasta storage subhasta = $.subhastes[idSubhasta];
         require(subhasta.contracteNFT != address(0), "subhasta no existeix");
-        require(
-            block.timestamp < subhasta.tempsFinal,
-            "subhasta no finalitzada"
-        );
+        require(block.timestamp < subhasta.tempsFinal, "subhasta no finalitzada");
         require(msg.value > subhasta.maximaOferta, "oferta massa baixa");
         require(msg.value > subhasta.preuReserva, "oferta inferior reserva");
 
         if (subhasta.maximaOferta > 0) {
-            uint256 incrementMinim = (subhasta.maximaOferta *
-                $.minIncrementOfertaPercentual) / 1000;
-            require(
-                msg.value >= subhasta.maximaOferta + incrementMinim,
-                "increment massa petit"
-            );
+            uint256 incrementMinim = (subhasta.maximaOferta * $.minIncrementOfertaPercentual) / 1000;
+            require(msg.value >= subhasta.maximaOferta + incrementMinim, "increment massa petit");
         }
 
         if (subhasta.maximaOferta != 0) {
-            $.devolucionsPendents[idSubhasta][
-                subhasta.maximLicitador
-            ] += subhasta.maximaOferta;
+            $.devolucionsPendents[idSubhasta][subhasta.maximLicitador] += subhasta.maximaOferta;
         }
 
         subhasta.maximLicitador = msg.sender;
@@ -172,7 +123,7 @@ abstract contract SubhastaBaseV2 is
         uint256 oferta = $.devolucionsPendents[idSubhasta][msg.sender];
         require(oferta > 0, "res a retornar");
         $.devolucionsPendents[idSubhasta][msg.sender] = 0;
-        (bool ok, ) = payable(msg.sender).call{value: oferta}("");
+        (bool ok,) = payable(msg.sender).call{value: oferta}("");
         require(ok, "devolucio ha fallat");
         emit DevolucioFeta(idSubhasta, msg.sender, oferta);
     }
@@ -182,38 +133,21 @@ abstract contract SubhastaBaseV2 is
         Subhasta storage subhasta = $.subhastes[idSubhasta];
         require(subhasta.contracteNFT != address(0), "subhasta no trobada");
         require(!subhasta.finalitzada, "subhasta finalitzada");
-        require(
-            block.timestamp >= subhasta.tempsFinal,
-            "subhasta encara activa"
-        );
+        require(block.timestamp >= subhasta.tempsFinal, "subhasta encara activa");
 
         subhasta.finalitzada = true;
 
-        address destinacio = subhasta.maximLicitador == address(0)
-            ? subhasta.venedor
-            : subhasta.maximLicitador;
-        IERC721(subhasta.contracteNFT).safeTransferFrom(
-            address(this),
-            destinacio,
-            subhasta.idToken
-        );
+        address destinacio = subhasta.maximLicitador == address(0) ? subhasta.venedor : subhasta.maximLicitador;
+        IERC721(subhasta.contracteNFT).safeTransferFrom(address(this), destinacio, subhasta.idToken);
         if (subhasta.maximaOferta != 0) {
-            (bool ok, ) = payable(subhasta.venedor).call{
-                value: subhasta.maximaOferta
-            }("");
+            (bool ok,) = payable(subhasta.venedor).call{value: subhasta.maximaOferta}("");
             require(ok, "transferencia ETH ha fallat");
         }
-        emit SubhastaFinalitzada(
-            idSubhasta,
-            subhasta.maximLicitador,
-            subhasta.maximaOferta
-        );
+        emit SubhastaFinalitzada(idSubhasta, subhasta.maximLicitador, subhasta.maximaOferta);
         emit NFTTransferit(idSubhasta, subhasta.contracteNFT, subhasta.idToken);
     }
 
-    function cancellacioSubhastaVenedor(
-        uint256 idSubhasta
-    ) external nonReentrant {
+    function cancellacioSubhastaVenedor(uint256 idSubhasta) external nonReentrant {
         SubhastaStorage storage $ = obteStorage();
         Subhasta storage subhasta = $.subhastes[idSubhasta];
 
@@ -223,11 +157,7 @@ abstract contract SubhastaBaseV2 is
 
         subhasta.finalitzada = true;
         subhasta.estat = EstatSubhasta.CancelladaVenedor;
-        IERC721(subhasta.contracteNFT).safeTransferFrom(
-            address(this),
-            subhasta.venedor,
-            subhasta.idToken
-        );
+        IERC721(subhasta.contracteNFT).safeTransferFrom(address(this), subhasta.venedor, subhasta.idToken);
 
         emit SubhastaCancellada(idSubhasta, EstatSubhasta.CancelladaVenedor);
     }

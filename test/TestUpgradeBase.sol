@@ -5,9 +5,9 @@ import "forge-std/Test.sol";
 import "../src/SubhastaNoActualitzable.sol";
 import "../src/NFTTest.sol";
 import "../src/ISubhasta.sol";
- // Participants (adreces de prova)
+// Participants (adreces de prova)
 
- abstract contract TestUpgradeBase is Test {
+abstract contract TestUpgradeBase is Test {
     address constant VENEDOR1 = address(1);
     address constant VENEDOR2 = address(2);
     address constant LICITADOR1 = address(3);
@@ -23,7 +23,7 @@ import "../src/ISubhasta.sol";
 
     function creaSubhasta() internal virtual returns (ISubhasta);
     function actualitzaSubhasta() internal virtual returns (ISubhasta);
-    
+
     function setUp() public {
         subhasta = creaSubhasta();
         nft = new NFTTest();
@@ -44,6 +44,5 @@ import "../src/ISubhasta.sol";
         vm.deal(LICITADOR3, 10 ether);
     }
 
-    // 
- }
-
+    //
+}

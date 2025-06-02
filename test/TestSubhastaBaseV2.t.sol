@@ -10,19 +10,12 @@ import "./TestSubhastaBase.t.sol";
 // PENDENT Completar
 
 abstract contract TestSubhastaBaseV2 is TestSubhastaBase {
-
     function testPreuReserva() public {
         ISubhastaV2 subhastaV2 = ISubhastaV2(address(subhasta));
 
         // VENEDOR1 crea una subhasta amb preu reserva 2 ether
         vm.prank(VENEDOR1);
-        uint256 id = subhastaV2.novaSubhastaPreuReserva(
-            VENEDOR1,
-            1 hours,
-            address(nft),
-            token1,
-            2 ether
-        );
+        uint256 id = subhastaV2.novaSubhastaPreuReserva(VENEDOR1, 1 hours, address(nft), token1, 2 ether);
 
         // LICITADOR1 intenta fer una oferta inferior que serà rebutjada
         vm.prank(LICITADOR1);
@@ -36,20 +29,14 @@ abstract contract TestSubhastaBaseV2 is TestSubhastaBase {
 
     function testIncrementMinim() public {
         ISubhastaV2 subhastaV2 = ISubhastaV2(address(subhasta));
-  
+
         // Només el propietari pot establir l'increment mínim
         vm.prank(address(this));
         subhastaV2.estableixIncrementMinim(25); // 2.5%
 
         // VENEDOR1 crea una subhasta
         vm.prank(VENEDOR1);
-        uint256 id = subhastaV2.novaSubhastaPreuReserva(
-            VENEDOR1,
-            1 hours,
-            address(nft),
-            token1,
-            0
-        );
+        uint256 id = subhastaV2.novaSubhastaPreuReserva(VENEDOR1, 1 hours, address(nft), token1, 0);
 
         // LICITADOR1 fa una oferta inicial de 1 ether
         vm.prank(LICITADOR1);
@@ -71,13 +58,7 @@ abstract contract TestSubhastaBaseV2 is TestSubhastaBase {
         // El venedor crea una subhasta
         ISubhastaV2 subhastaV2 = ISubhastaV2(address(subhasta));
         vm.prank(VENEDOR1);
-        uint256 id = subhastaV2.novaSubhastaPreuReserva(
-            VENEDOR1,
-            1 hours,
-            address(nft),
-            token1,
-            0
-        );
+        uint256 id = subhastaV2.novaSubhastaPreuReserva(VENEDOR1, 1 hours, address(nft), token1, 0);
 
         // La subhasta és cancel·lada correctament
         vm.prank(VENEDOR1);
@@ -95,13 +76,7 @@ abstract contract TestSubhastaBaseV2 is TestSubhastaBase {
 
         // El venedor crea una subhasta
         vm.prank(VENEDOR1);
-        uint256 id = subhastaV2.novaSubhastaPreuReserva(
-            VENEDOR1,
-            1 hours,
-            address(nft),
-            token1,
-            0
-        );
+        uint256 id = subhastaV2.novaSubhastaPreuReserva(VENEDOR1, 1 hours, address(nft), token1, 0);
 
         // Un licitador fa una oferta
         vm.prank(LICITADOR1);

@@ -7,10 +7,8 @@ import "./SubhastaBaseV2.sol";
 contract SubhastaUUPSV2 is UUPSUpgradeable, SubhastaBaseV2 {
     function initialize(address propietari) external initializer {
         initializeBase(propietari);
-         __UUPSUpgradeable_init();
+        __UUPSUpgradeable_init();
     }
+
     function _authorizeUpgrade(address novaImplementacio) internal override onlyOwner {}
 }
-
-
-

@@ -46,12 +46,7 @@ abstract contract TestSubhastaBase is Test {
     // Test de creació d'una subhasta
     function testCreacio() public {
         vm.prank(VENEDOR1);
-        uint256 id = subhasta.novaSubhasta(
-            VENEDOR1,
-            1 hours,
-            address(nft),
-            token1
-        );
+        uint256 id = subhasta.novaSubhasta(VENEDOR1, 1 hours, address(nft), token1);
 
         assertEq(id, 1);
         assertEq(nft.ownerOf(token1), address(subhasta));
@@ -60,12 +55,7 @@ abstract contract TestSubhastaBase is Test {
     // Test desenvolupament d'una subhasta
     function testOfertesDevolucions() public {
         vm.prank(VENEDOR1);
-        uint256 id = subhasta.novaSubhasta(
-            VENEDOR1,
-            1 hours,
-            address(nft),
-            token1
-        );
+        uint256 id = subhasta.novaSubhasta(VENEDOR1, 1 hours, address(nft), token1);
 
         // Oferta inicial 1 ETH
         vm.prank(LICITADOR1);
@@ -123,12 +113,7 @@ abstract contract TestSubhastaBase is Test {
         vm.prank(VENEDOR1);
         uint256 id1 = subhasta.novaSubhasta(VENEDOR1, 60, address(nft), token1);
         vm.prank(VENEDOR2);
-        uint256 id2 = subhasta.novaSubhasta(
-            VENEDOR2,
-            120,
-            address(nft),
-            token2
-        );
+        uint256 id2 = subhasta.novaSubhasta(VENEDOR2, 120, address(nft), token2);
 
         // Ofertes independents
         vm.prank(LICITADOR1);

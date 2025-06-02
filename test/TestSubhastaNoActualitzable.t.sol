@@ -1,4 +1,5 @@
 pragma solidity ^0.8.28;
+
 import "./TestSubhastaBase.t.sol";
 import "../src/SubhastaNoActualitzable.sol";
 import "../src/ISubhasta.sol";

@@ -8,5 +8,3 @@ contract SubhastaTransparent is SubhastaBase {
         initializeBase(propietari);
     }
 }
-
-

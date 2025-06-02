@@ -7,8 +7,8 @@ import "forge-std/Script.sol";
 
 contract CalculSlot is Script {
     function run() external {
-       bytes memory name = bytes("subhasta.base");
-       bytes32 slot = bytes32(uint256(keccak256(name))-1);
-       console2.logBytes32(slot);
+        bytes memory name = bytes("subhasta.base");
+        bytes32 slot = bytes32(uint256(keccak256(name)) - 1);
+        console2.logBytes32(slot);
     }
 }
