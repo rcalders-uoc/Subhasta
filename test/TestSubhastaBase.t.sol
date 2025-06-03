@@ -2,7 +2,6 @@
 pragma solidity ^0.8.28;
 
 import "forge-std/Test.sol";
-import "../src/SubhastaNoActualitzable.sol";
 import "../src/NFTTest.sol";
 import "../src/ISubhasta.sol";
 
@@ -163,5 +162,19 @@ abstract contract TestSubhastaBase is Test {
         // Comprovem qeu el venedor ha recuperat
         // el token
         assertEq(nft.ownerOf(token1), VENEDOR1);
+    }
+
+    function testOfertaIgualAnterior() public {
+        vm.prank(VENEDOR1);
+        uint256 id = subhasta.novaSubhasta(VENEDOR1, 1 hours, address(nft), token1);
+
+        // Oferta inicial 1 ETH
+        vm.prank(LICITADOR1);
+        subhasta.novaOferta{value: 1 ether}(id);
+
+        // Oferta igual que l'anterior, hauria de revertir
+        vm.prank(LICITADOR2);
+        vm.expectRevert("oferta massa baixa");
+        subhasta.novaOferta{value: 1 ether}(id);
     }
 }

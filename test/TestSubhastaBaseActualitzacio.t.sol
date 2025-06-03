@@ -178,4 +178,21 @@ abstract contract TestSubhastaBaseActualitzacio is Test {
         // el token
         assertEq(nft.ownerOf(token1), VENEDOR1);
     }
+
+        function testOfertaIgualAnterior() public {
+        vm.prank(VENEDOR1);
+        uint256 id = subhasta.novaSubhasta(VENEDOR1, 1 hours, address(nft), token1);
+
+        // Oferta inicial 1 ETH
+        vm.prank(LICITADOR1);
+        subhasta.novaOferta{value: 1 ether}(id);
+        
+       // Efectuem canvi de contracte
+        actualitzaSubhasta();
+
+        // Oferta igual que l'anterior, hauria de revertir
+        vm.prank(LICITADOR2);
+        vm.expectRevert("oferta massa baixa");
+        subhasta.novaOferta{value: 1 ether}(id);
+    }
 }
