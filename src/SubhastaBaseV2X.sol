@@ -15,16 +15,16 @@ abstract contract SubhastaBaseV2X is Initializable, OwnableUpgradeable, Reentran
     }
 
     struct Subhasta {
-        address venedor;        // Camp de la V1
-        uint48 tempsFinal;      // Camp de la V1
+        address venedor; // Camp de la V1
+        uint48 tempsFinal; // Camp de la V1
         address maximLicitador; // Camp de la V1
-        uint256 maximaOferta;   // Camp de la V1
-        bool finalitzada;       // Camp de la V1
-        address contracteNFT;   // Camp de la V1
+        uint256 maximaOferta; // Camp de la V1
+        bool finalitzada; // Camp de la V1
+        address contracteNFT; // Camp de la V1
         // S'ha alterat la ordenació respecte de la versió 1.
-        uint256 preuReserva;    // Camp de la V2 
-        EstatSubhasta estat;    // Camp de la V2
-        uint256 idToken;        // Camp de la V1
+        uint256 preuReserva; // Camp de la V2
+        EstatSubhasta estat; // Camp de la V2
+        uint256 idToken; // Camp de la V1
     }
 
     struct SubhastaStorage {

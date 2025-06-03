@@ -8,7 +8,6 @@ import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import "forge-std/Test.sol";
 
 contract TestSubhastaUUPS is TestSubhastaBaseActualitzacioV2 {
-
     function creaSubhasta() internal override returns (ISubhasta) {
         address admin = tx.origin;
         vm.startPrank(admin);
